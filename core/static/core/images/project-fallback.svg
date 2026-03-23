@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="Project placeholder illustration">
+  <rect width="1200" height="675" fill="#e2e8f0"/>
+  <g fill="#94a3b8">
+    <path d="M140 520h920v60H140z"/>
+    <path d="M220 520V250l220-130 220 130v270"/>
+    <path d="M630 520V210l150-90 150 90v310"/>
+  </g>
+  <circle cx="930" cy="170" r="58" fill="#c9862f" opacity="0.7"/>
+</svg>

@@ -1,0 +1,21 @@
+{% load core_extras static %}
+<article class="project-card card border-0 shadow-soft rounded-5 overflow-hidden h-100">
+    <div class="project-media-wrap position-relative">
+        <img src="{{ project.image.url }}" class="card-img project-image" alt="{{ project.title }}" loading="lazy">
+        <div class="project-overlay d-flex flex-column justify-content-end">
+            <span class="badge text-bg-light rounded-pill align-self-start mb-2">{{ project.get_category_display }}</span>
+            <h3 class="h4 text-white mb-1">{{ project.title }}</h3>
+            <p class="text-white-50 small mb-3">{{ project.description|truncatewords:18 }}</p>
+            <button
+                class="btn btn-light align-self-start rounded-pill px-4 project-preview-trigger"
+                data-bs-toggle="modal"
+                data-bs-target="#projectPreviewModal"
+                data-title="{{ project.title }}"
+                data-category="{{ project.get_category_display }}"
+                data-description="{{ project.description|escape }}"
+                data-image="{{ project.image.url }}"
+                data-video="{{ project.video_url|embed_video }}"
+            >Preview project</button>
+        </div>
+    </div>
+</article>
