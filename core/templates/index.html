@@ -1,0 +1,332 @@
+{% extends 'base.html' %}
+{% load core_extras static %}
+
+{% block content %}
+<section id="hero" class="hero-section d-flex align-items-center">
+    {% if hero and hero.background_image %}<img src="{{ hero.background_image.url }}" alt="Hero background" class="hero-bg-image">{% endif %}
+    <div class="hero-overlay"></div>
+    <div class="container position-relative">
+        <div class="row min-vh-100 align-items-center py-5">
+            <div class="col-lg-7 text-white">
+                <span class="eyebrow mb-3 d-inline-flex">Reliable construction & craftsmanship</span>
+                <h1 class="display-4 fw-bold mb-3">{{ hero.title|default:'Building dependable spaces with expert hands.' }}</h1>
+                <p class="lead text-white-50 mb-4">{{ hero.subtitle|default:'From structural construction and precision masonry to plumbing upgrades and water repair, we deliver quality work with modern project management and lasting results.' }}</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{{ hero.call_to_action_link|default:'#contact' }}" class="btn btn-primary btn-lg px-4">{{ hero.call_to_action_text|default:'Request a quote' }}</a>
+                    <a href="#services" class="btn btn-outline-light btn-lg px-4 js-scroll">Explore services</a>
+                </div>
+                <a href="#services" class="hero-scroll js-scroll" aria-label="Scroll to services section">
+                    <i class="bi bi-arrow-down"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="services" class="section-padding bg-light-subtle">
+    <div class="container">
+        <div class="section-heading text-center mx-auto mb-5">
+            <span class="eyebrow">What we do</span>
+            <h2 class="mt-3">Construction services that balance strength, detail, and speed.</h2>
+            <p class="text-secondary mb-0">Each service is managed with clear communication, tidy job sites, and durable materials chosen for long-term performance.</p>
+        </div>
+        <div class="row g-4">
+            {% for service in services %}
+                <div class="col-md-6 col-xl-4 d-flex">
+                    {% include 'partials/service_card.html' with service=service %}
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="empty-state text-center p-5 bg-white rounded-4 shadow-sm">
+                        <h3 class="h4">Add services in the Django admin</h3>
+                        <p class="mb-0 text-secondary">This section is fully database-driven and will automatically populate once service records are created.</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section id="videos" class="section-padding">
+    <div class="container">
+        <div class="row g-4 align-items-start">
+            <div class="col-lg-7">
+                <div class="section-heading mb-4">
+                    <span class="eyebrow">Video showcase</span>
+                    <h2 class="mt-3">See projects, repairs, and craftsmanship in motion.</h2>
+                </div>
+                <div class="ratio ratio-16x9 featured-video shadow-soft rounded-4 overflow-hidden">
+                    <iframe id="featuredVideoFrame" src="{{ featured_video.video_url|default:'https://www.youtube.com/embed/zpOULjyy-n8?rel=0'|embed_video }}" title="Featured project video" allowfullscreen loading="lazy"></iframe>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div id="videoCarousel" class="carousel slide" data-bs-ride="false">
+                    <div class="carousel-inner">
+                        {% for video in videos %}
+                            {% if forloop.first or forloop.counter0|divisibleby:3 %}
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                    <div class="row g-3">
+                            {% endif %}
+                            <div class="col-12">
+                                <button class="video-thumb btn w-100 text-start p-0 border-0 bg-transparent" data-video-url="{{ video.video_url|embed_video }}" data-video-title="{{ video.title }}">
+                                    <div class="card border-0 shadow-soft rounded-4 overflow-hidden">
+                                        <div class="row g-0 align-items-center">
+                                            <div class="col-4">
+                                                <img src="{{ video.thumbnail.url }}" class="img-fluid h-100 object-fit-cover" alt="{{ video.title }} thumbnail" loading="lazy">
+                                            </div>
+                                            <div class="col-8">
+                                                <div class="card-body p-3">
+                                                    <p class="fw-semibold mb-1">{{ video.title }}</p>
+                                                    <small class="text-secondary">Tap to load this video in the main player.</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </button>
+                            </div>
+                            {% if forloop.last or forloop.counter|divisibleby:3 %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% empty %}
+                            <div class="carousel-item active">
+                                <div class="card border-0 shadow-soft rounded-4 p-4 bg-light-subtle">
+                                    <p class="fw-semibold mb-1">No videos yet</p>
+                                    <p class="mb-0 text-secondary">Create video items in the admin to populate this interactive showcase.</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if videos|length > 3 %}
+                        <div class="d-flex gap-2 justify-content-end mt-3">
+                            <button class="btn btn-outline-secondary btn-sm rounded-circle" type="button" data-bs-target="#videoCarousel" data-bs-slide="prev" aria-label="Previous videos"><i class="bi bi-chevron-left"></i></button>
+                            <button class="btn btn-outline-secondary btn-sm rounded-circle" type="button" data-bs-target="#videoCarousel" data-bs-slide="next" aria-label="Next videos"><i class="bi bi-chevron-right"></i></button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="projects" class="section-padding bg-light-subtle">
+    <div class="container">
+        <div class="section-heading text-center mx-auto mb-4">
+            <span class="eyebrow">Our work</span>
+            <h2 class="mt-3">A portfolio built around precision, safety, and finish quality.</h2>
+            <p class="text-secondary mb-0">Filter the gallery to jump between core service categories and inspect each project in more detail.</p>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+            <button class="btn btn-dark rounded-pill px-4 project-filter active" data-filter="all">All</button>
+            {% for category in project_categories %}
+                <button class="btn btn-outline-dark rounded-pill px-4 project-filter" data-filter="{{ category|slugify_css }}">{{ category|title }}</button>
+            {% endfor %}
+        </div>
+
+        <div class="row g-4" id="projectsGrid">
+            {% for project in projects %}
+                <div class="col-md-6 col-xl-4 project-item" data-category="{{ project.category|slugify_css }}">
+                    {% include 'partials/project_card.html' with project=project %}
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="empty-state text-center p-5 bg-white rounded-4 shadow-sm">
+                        <h3 class="h4">Your project gallery will appear here</h3>
+                        <p class="mb-0 text-secondary">Add project records from the admin to enable gallery filtering and modal previews.</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section id="testimonials" class="section-padding">
+    <div class="container">
+        <div class="section-heading text-center mx-auto mb-5">
+            <span class="eyebrow">Client feedback</span>
+            <h2 class="mt-3">Trusted by homeowners and property managers alike.</h2>
+        </div>
+        <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for testimonial in testimonials %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                {% include 'partials/testimonial_card.html' with testimonial=testimonial %}
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="carousel-item active">
+                        <div class="card border-0 shadow-soft rounded-4 p-5 text-center bg-light-subtle">
+                            <p class="fw-semibold mb-1">Testimonials are ready to display.</p>
+                            <p class="mb-0 text-secondary">Once you add client reviews in the admin, this carousel will rotate them automatically.</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if testimonials %}
+                <div class="d-flex justify-content-center gap-2 mt-4">
+                    <button class="btn btn-outline-secondary rounded-circle" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev" aria-label="Previous testimonial"><i class="bi bi-arrow-left"></i></button>
+                    <button class="btn btn-outline-secondary rounded-circle" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next" aria-label="Next testimonial"><i class="bi bi-arrow-right"></i></button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section id="about" class="section-padding bg-light-subtle">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <div class="image-stack position-relative">
+                    <img src="{% if about and about.image %}{{ about.image.url }}{% else %}{% static 'core/images/about-fallback.svg' %}{% endif %}" alt="Construction team at work" class="img-fluid rounded-5 shadow-soft" loading="lazy">
+                    <div class="experience-badge shadow-soft rounded-4">
+                        <span class="d-block fw-bold h4 mb-1">20+</span>
+                        <span class="text-secondary">Years combined expertise</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <span class="eyebrow">About us</span>
+                <h2 class="mt-3">{{ about.headline|default:'Your dependable partner for building, repairs, and finish work.' }}</h2>
+                <p class="lead text-secondary">{{ about.content|default:'We combine planning discipline, experienced crews, and a practical understanding of how homes age and perform. That means better construction decisions, cleaner results, and faster problem-solving on site.' }}</p>
+                <div class="row g-3 mt-2">
+                    <div class="col-sm-6">
+                        <div class="mini-stat rounded-4 p-4 h-100">
+                            <h3 class="h5">Quality-first delivery</h3>
+                            <p class="mb-0 text-secondary">We focus on durable workmanship, accurate scheduling, and transparent updates.</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="mini-stat rounded-4 p-4 h-100">
+                            <h3 class="h5">Multi-trade expertise</h3>
+                            <p class="mb-0 text-secondary">Construction, masonry, home crafts, and water systems handled under one brand.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="social" class="section-padding">
+    <div class="container">
+        <div class="section-heading text-center mx-auto mb-4">
+            <span class="eyebrow">Stay connected</span>
+            <h2 class="mt-3">Follow our work, updates, and behind-the-scenes progress.</h2>
+        </div>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            {% for link in social_links %}
+                <a href="{{ link.url }}" class="social-pill" target="_blank" rel="noopener noreferrer" aria-label="Visit our {{ link.platform_name }} page">
+                    <i class="{{ link.icon_class }}"></i>
+                    <span>{{ link.platform_name }}</span>
+                </a>
+            {% empty %}
+                <p class="text-secondary mb-0">Social media buttons will appear here after links are added in the admin.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="section-padding bg-light-subtle">
+    <div class="container">
+        <div class="row g-4 g-xl-5">
+            <div class="col-lg-5">
+                <span class="eyebrow">Contact us</span>
+                <h2 class="mt-3 mb-4">Let’s plan your next building or repair project.</h2>
+                <div class="vstack gap-3 mb-4">
+                    <div class="contact-card p-4 rounded-4 bg-white shadow-soft">
+                        <div class="d-flex gap-3 align-items-start">
+                            <span class="contact-icon"><i class="bi bi-telephone"></i></span>
+                            <div>
+                                <h3 class="h6 mb-1">Phone</h3>
+                                <a href="tel:{{ contact.phone|default:'+10000000000' }}" class="text-decoration-none text-dark">{{ contact.phone|default:'+1 (000) 000-0000' }}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-card p-4 rounded-4 bg-white shadow-soft">
+                        <div class="d-flex gap-3 align-items-start">
+                            <span class="contact-icon"><i class="bi bi-envelope"></i></span>
+                            <div>
+                                <h3 class="h6 mb-1">Email</h3>
+                                <a href="mailto:{{ contact.email|default:'hello@example.com' }}" class="text-decoration-none text-dark">{{ contact.email|default:'hello@example.com' }}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-card p-4 rounded-4 bg-white shadow-soft">
+                        <div class="d-flex gap-3 align-items-start">
+                            <span class="contact-icon"><i class="bi bi-geo-alt"></i></span>
+                            <div>
+                                <h3 class="h6 mb-1">Address</h3>
+                                <p class="mb-0 text-secondary">{{ contact.address|default:'Add your business address in Django admin.' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if contact and contact.business_hours %}
+                    <p class="text-secondary mb-0"><strong>Hours:</strong> {{ contact.business_hours }}</p>
+                {% endif %}
+            </div>
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-soft rounded-5 overflow-hidden mb-4">
+                    <div class="card-body p-4 p-lg-5">
+                        <h3 class="h4 mb-3">Request a quote</h3>
+                        <form method="post" class="row g-3">
+                            {% csrf_token %}
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control form-control-lg" id="name" name="name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control form-control-lg" id="email" name="email" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="message" class="form-label">Project details</label>
+                                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                            </div>
+                            <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <p class="text-secondary small mb-0">We usually respond within one business day.</p>
+                                <button type="submit" class="btn btn-primary btn-lg px-4">Send inquiry</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="map-shell rounded-5 overflow-hidden shadow-soft bg-white">
+                    {% if contact and contact.map_embed %}
+                        {{ contact.map_embed|render_map }}
+                    {% else %}
+                        <div class="p-5 text-center text-secondary">Paste a Google Maps iframe embed code into the contact record to display the map here.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="projectPreviewModal" tabindex="-1" aria-labelledby="projectPreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 rounded-5 overflow-hidden">
+            <div class="modal-header border-0 pb-0">
+                <h2 class="modal-title h4" id="projectPreviewModalLabel">Project preview</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-0">
+                <div class="ratio ratio-16x9 mb-4 rounded-4 overflow-hidden bg-light-subtle">
+                    <img id="projectPreviewImage" src="{% static 'core/images/project-fallback.svg' %}" alt="Project preview" class="object-fit-cover w-100 h-100">
+                    <iframe id="projectPreviewVideo" class="d-none w-100 h-100" title="Project video preview" allowfullscreen></iframe>
+                </div>
+                <div class="d-flex justify-content-between flex-wrap gap-3 align-items-center mb-2">
+                    <div>
+                        <p id="projectPreviewCategory" class="eyebrow mb-2"></p>
+                        <h3 id="projectPreviewTitle" class="h4 mb-0"></h3>
+                    </div>
+                </div>
+                <p id="projectPreviewDescription" class="text-secondary mb-0"></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
