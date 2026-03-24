@@ -44,7 +44,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    # "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -80,6 +80,22 @@ DATABASES = {
     }
 }
 
+CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript to access CSRF cookie
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.app.github.dev',  # Allow all GitHub Codespaces domains
+    'https://localhost:8000',
+    'https://localhost:6379',
+    'https://localhost:9000',
+]
+
+# CORS settings (if using django-cors-headers)
+CORS_ALLOWED_ORIGINS = [
+    'https://*.app.github.dev',  # Allow all GitHub Codespaces domains
+    'https://localhost:8000',
+    'https://localhost:9000',
+    'https://localhost:6379',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators

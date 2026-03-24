@@ -19,7 +19,7 @@ class HeroSection(models.Model):
     title = models.CharField(max_length=150, default="Welcome to the club")
     subtitle = models.CharField(max_length=150, default="Tiya is")
     rotating_words = models.CharField(max_length=255, default="Modern,Creative,Lifestyle")
-    video_url = models.URLField(blank=True, default="https://www.youtube.com/embed/MGNgbNGOzh8")
+    video = models.FileField(upload_to='videos/', blank=True, null=True)
     button_text_1 = models.CharField(max_length=100, default="Our Story")
     button_link_1 = models.CharField(max_length=255, default="#section_2")
     button_text_2 = models.CharField(max_length=100, default="Become a member")
@@ -27,6 +27,8 @@ class HeroSection(models.Model):
 
     def __str__(self):
         return self.title
+
+    
 
 
 class AboutSection(models.Model):
