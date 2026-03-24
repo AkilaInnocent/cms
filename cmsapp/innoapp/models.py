@@ -104,10 +104,36 @@ class Testimonial(models.Model):
     image = models.ImageField(upload_to="testimonials/", blank=True, null=True)
     message = models.TextField()
     rating = models.IntegerField(default=5)
+    link = models.URLField(blank=True, help_text="Customer profile link")
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
+
+
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=50)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.name} ({self.email})"
+
+
+class Subscriber(models.Model):
+    email = models.EmailField(unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.email
 
 
 class Solution(models.Model):
