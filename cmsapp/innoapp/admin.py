@@ -131,3 +131,42 @@ class HeroVideoAdmin(admin.ModelAdmin):
                 obj.video.url
             )
         return "No video"
+
+
+
+from django.contrib import admin
+from .models import Testimonial, Solution
+
+
+@admin.register(Testimonial)
+class TestimonialAdmin(admin.ModelAdmin):
+    list_display = ("name", "role", "rating", "is_active")
+    list_filter = ("is_active", "rating")
+    search_fields = ("name", "role", "message")
+    list_editable = ("is_active", "rating")
+    ordering = ("-rating",)
+
+    fieldsets = (
+        ("Basic Info", {
+            "fields": ("name", "role", "image")
+        }),
+        ("Content", {
+            "fields": ("message",)
+        }),
+        ("Settings", {
+            "fields": ("rating", "is_active")
+        }),
+    )
+
+
+@admin.register(Solution)
+class SolutionAdmin(admin.ModelAdmin):
+    list_display = ("title",)
+    search_fields = ("title", "description")
+    ordering = ("title",)
+
+    fieldsets = (
+        ("Solution Info", {
+            "fields": ("title", "description")
+        }),
+    )
