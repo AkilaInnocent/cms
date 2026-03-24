@@ -69,7 +69,7 @@ https://templatemo.com/tm-587-tiya-golf-club
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'homepage' %}#section_3">Membership</a>
+                                <a class="nav-link" href="{% url 'homepage' %}#section_3">Testimonials</a>
                             </li>
 
                             <li class="nav-item">
@@ -192,6 +192,12 @@ https://templatemo.com/tm-587-tiya-golf-club
                                 <h3 class="mb-3">{{ about.subtitle|default:"Golf Club based in Orlando" }}</h3>
 
                                 <p>{{ event.description|default:"Tiya Golf Club is Bootstrap v5.3.0 HTML CSS template for your golf related websites. Anyone can download, edit and use this layout for commercial purposes." }}</p>
+                                <div class="d-flex align-items-center flex-wrap gap-2 mb-4">
+                                    <span class="custom-block-span">Share:</span>
+                                    <a class="btn btn-sm btn-outline-success" target="_blank" href="https://wa.me/?text={{ event.title }} {{ request.build_absolute_uri }}"><i class="bi bi-whatsapp"></i></a>
+                                    <a class="btn btn-sm btn-outline-primary" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"><i class="bi bi-facebook"></i></a>
+                                    <a class="btn btn-sm btn-outline-dark" target="_blank" href="https://twitter.com/intent/tweet?text={{ event.title }}&url={{ request.build_absolute_uri }}"><i class="bi bi-twitter-x"></i></a>
+                                </div>
 
                             <p>{{ about.description_2|default:"Tiya is 100% free CSS template provided by TemplateMo website. Please tell your friends about our website. Thank you for visiting." }}</p>
 

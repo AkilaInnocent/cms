@@ -19,7 +19,7 @@ class HeroSection(models.Model):
     title = models.CharField(max_length=150, default="Welcome to the club")
     subtitle = models.CharField(max_length=150, default="Tiya is")
     rotating_words = models.CharField(max_length=255, default="Modern,Creative,Lifestyle")
-    video = models.FileField(upload_to='videos/', blank=True, null=True)
+    video = models.FileField(upload_to="videos/", blank=True, null=True)
     button_text_1 = models.CharField(max_length=100, default="Our Story")
     button_link_1 = models.CharField(max_length=255, default="#section_2")
     button_text_2 = models.CharField(max_length=100, default="Become a member")
@@ -28,7 +28,18 @@ class HeroSection(models.Model):
     def __str__(self):
         return self.title
 
-    
+
+class HeroVideo(models.Model):
+    title = models.CharField(max_length=120)
+    video = models.FileField(upload_to="hero_videos/")
+    order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    def __str__(self):
+        return self.title
 
 
 class AboutSection(models.Model):
@@ -82,6 +93,26 @@ class Event(models.Model):
 
     class Meta:
         ordering = ["date"]
+
+    def __str__(self):
+        return self.title
+
+
+class Testimonial(models.Model):
+    name = models.CharField(max_length=100)
+    role = models.CharField(max_length=100, blank=True)
+    image = models.ImageField(upload_to="testimonials/", blank=True, null=True)
+    message = models.TextField()
+    rating = models.IntegerField(default=5)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Solution(models.Model):
+    title = models.CharField(max_length=150)
+    description = models.TextField()
 
     def __str__(self):
         return self.title

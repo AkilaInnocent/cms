@@ -69,7 +69,7 @@ https://templatemo.com/tm-587-tiya-golf-club
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link click-scroll" href="#section_3">Membership</a>
+                                <a class="nav-link click-scroll" href="#section_3">Testimonials</a>
                             </li>
 
                             <li class="nav-item">
@@ -290,161 +290,102 @@ https://templatemo.com/tm-587-tiya-golf-club
             <section class="membership-section section-padding" id="section_3">
                 <div class="container">
                     <div class="row">
-
                         <div class="col-lg-12 col-12 text-center mx-auto mb-lg-5 mb-4">
-                            <h2><span>Membership</span> at {{ site.site_name|default:"Tiya" }}</h2>
+                            <h2><span>Testimonials</span> at {{ site.site_name|default:"Tiya" }}</h2>
                         </div>
 
-                        <div class="col-lg-6 col-12 mb-3 mb-lg-0">
-                            <h4 class="mb-4 pb-lg-2">Membership Fees</h4>
-
-                            <div class="table-responsive">
-                                <table class="table text-center">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 34%;">Yearly Access</th>
-                                            
-                                            <th style="width: 22%;">{{ plans.0.name|default:"T1" }} {{ plans.0.price|default:"$420" }}</th>
-                                            
-                                            <th style="width: 22%;">{{ plans.1.name|default:"T2" }} {{ plans.1.price|default:"$640" }}</th>
-                                            
-                                            <th style="width: 22%;">{{ plans.2.name|default:"T3" }} {{ plans.2.price|default:"$860" }}</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row" class="text-start">Golf Insurance</th>
-                                            
-                                            <td>
-                                                <i class="bi-check-circle-fill"></i>
-                                            </td>
-                                            
-                                            <td>
-                                                <i class="bi-check-circle-fill"></i>
-                                            </td>
-                                            
-                                            <td>
-                                                <i class="bi-check-circle-fill"></i>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row" class="text-start">Club Facilities</th>
-
-                                            <td>
-                                                <i class="bi-check-circle-fill"></i>
-                                            </td>
-
-                                            <td>
-                                                <i class="bi-check-circle-fill"></i>
-                                            </td>
-
-                                            <td>
-                                                <i class="bi-check-circle-fill"></i>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row" class="text-start">Country Club</th>
-
-                                            <td>
-                                                <i class="bi-x-circle-fill"></i>
-                                            </td>
-
-                                            <td>
-                                                <i class="bi-check-circle-fill"></i>
-                                            </td>
-
-                                            <td>
-                                                <i class="bi-check-circle-fill"></i>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row" class="text-start">Weekend Seasonal</th>
-
-                                            <td>
-                                                <i class="bi-x-circle-fill"></i>
-                                            </td>
-
-                                            <td>
-                                                <i class="bi-check-circle-fill"></i>
-                                            </td>
-
-                                            <td>
-                                                <i class="bi-check-circle-fill"></i>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <th scope="row" class="text-start">Premium Courses</th>
-
-                                            <td>
-                                                <i class="bi-x-circle-fill"></i>
-                                            </td>
-
-                                            <td>
-                                                <i class="bi-x-circle-fill"></i>
-                                            </td>
-
-                                            <td>
-                                                <i class="bi-check-circle-fill"></i>
-                                            </td>
-                                        </tr>
-                                        
-                                        <tr>
-                                            <th scope="row" class="text-start">Pro's Networking</th>
-
-                                            <td>
-                                                <i class="bi-x-circle-fill"></i>
-                                            </td>
-
-                                            <td>
-                                                <i class="bi-x-circle-fill"></i>
-                                            </td>
-
-                                            <td>
-                                                <i class="bi-check-circle-fill"></i>
-                                            </td>
-                                        </tr>
-                                        
-                                    </tbody>
-                                </table>
+                        {% for testimonial in testimonials %}
+                        <div class="col-lg-4 col-md-6 col-12 mb-4">
+                            <div class="card h-100 shadow-sm border-0">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        {% if testimonial.image %}
+                                        <img src="{{ testimonial.image.url }}" class="rounded-circle me-3" style="width:60px; height:60px; object-fit:cover;" alt="{{ testimonial.name }}">
+                                        {% else %}
+                                        <img src="{% static 'images/members/portrait-young-handsome-businessman-wearing-suit-standing-with-crossed-arms-with-isolated-studio-white-background.jpg' %}" class="rounded-circle me-3" style="width:60px; height:60px; object-fit:cover;" alt="{{ testimonial.name|default:'Guest' }}">
+                                        {% endif %}
+                                        <div>
+                                            <h5 class="mb-0">{{ testimonial.name }}</h5>
+                                            <small class="text-muted">{{ testimonial.role|default:"Member" }}</small>
+                                        </div>
+                                    </div>
+                                    <p class="mb-3">{{ testimonial.message|truncatechars:180 }}</p>
+                                    <div class="text-warning">
+                                        {% for _ in "12345" %}
+                                            {% if forloop.counter <= testimonial.rating %}
+                                            <i class="bi bi-star-fill"></i>
+                                            {% else %}
+                                            <i class="bi bi-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="col-lg-5 col-12 mx-auto">
-                        <h4 class="mb-4 pb-lg-2">Please join us!</h4>
-                            <form action="#" method="post" class="custom-form membership-form shadow-lg" role="form">
-                                <h4 class="text-white mb-4">Become a member</h4>
-
-                                    <div class="form-floating">
-                                        <input type="text" name="full-name" id="full-name" class="form-control" placeholder="Full Name" required="">
-                                        
-                                        <label for="floatingInput">Full Name</label>
-                                    </div>
-
-                                    <div class="form-floating">
-                                        <input type="email" name="email" id="email" pattern="[^ @]*@[^ @]*" class="form-control" placeholder="Email address" required="">
-                                        
-                                        <label for="floatingInput">Email address</label>
-                                    </div>
-
-                                    <div class="form-floating">
-                                        <textarea class="form-control" id="message" name="message" placeholder="Describe message here"></textarea>
-                                        
-                                        <label for="floatingTextarea"> Comments</label>
-                                    </div>
-
-                                    <button type="submit" class="form-control">Submit</button>
+                        {% empty %}
+                        <div class="col-lg-4 col-md-6 col-12 mb-4">
+                            <div class="card h-100 shadow-sm border-0">
+                                <div class="card-body">
+                                    <h5 class="mb-1">Sarah Johnson</h5>
+                                    <small class="text-muted">Club Member</small>
+                                    <p class="mt-3 mb-0">Fantastic experience, professional team, and a welcoming environment for every golfer.</p>
                                 </div>
-                            </form>
+                            </div>
                         </div>
-
+                        <div class="col-lg-4 col-md-6 col-12 mb-4">
+                            <div class="card h-100 shadow-sm border-0">
+                                <div class="card-body">
+                                    <h5 class="mb-1">David Lee</h5>
+                                    <small class="text-muted">Event Participant</small>
+                                    <p class="mt-3 mb-0">The events are always well-organized and the facilities are top quality.</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </section>
+
+            <section class="section-padding" id="section_solutions">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 col-12 text-center mb-4">
+                            <h2>Our Solutions</h2>
+                        </div>
+
+                        {% for solution in solutions %}
+                        <div class="col-lg-6 col-12 mb-4">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body">
+                                    <h4 class="mb-2">{{ solution.title }}</h4>
+                                    <p class="mb-0">{{ solution.description|truncatechars:220 }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-lg-6 col-12 mb-4">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body">
+                                    <h4 class="mb-2">Custom Golf Coaching</h4>
+                                    <p class="mb-0">Personalized coaching programs for beginners and experienced players to improve every aspect of their game.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-12 mb-4">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body">
+                                    <h4 class="mb-2">Corporate Event Management</h4>
+                                    <p class="mb-0">End-to-end planning for tournaments and business events with premium hospitality and seamless execution.</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+
+
+
 
 
             <section class="events-section section-bg section-padding" id="section_4">
@@ -519,13 +460,14 @@ https://templatemo.com/tm-587-tiya-golf-club
                     <div class="row">
 
                         <div class="col-lg-5 col-12">
-                            <form action="#" method="post" class="custom-form contact-form" role="form">
+                            <form action="{% url 'contact_submit' %}" method="post" class="custom-form contact-form" role="form">
+                                {% csrf_token %}
                                 <h2 class="mb-4 pb-2">Contact Tiya</h2>
 
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6 col-12">
                                         <div class="form-floating">
-                                            <input type="text" name="full-name" id="full-name" class="form-control" placeholder="Full Name" required="">
+                                            <input type="text" name="name" id="full-name" class="form-control" placeholder="Full Name" required="">
                                             
                                             <label for="floatingInput">Full Name</label>
                                         </div>
