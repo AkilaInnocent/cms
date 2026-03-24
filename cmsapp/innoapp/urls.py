@@ -10,6 +10,7 @@ urlpatterns = [
     path('details/', views.event_detail, name='details'),
     path('details/<slug:slug>/', views.event_detail, name='details_by_slug'),
     path('contact-submit/', views.contact_submit, name='contact_submit'),
+    path('newsletter-subscribe/', views.newsletter_subscribe, name='newsletter_subscribe'),
     path('login/', views.member_login, name='member_login'),
 ]
 

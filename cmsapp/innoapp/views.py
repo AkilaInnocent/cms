@@ -1,11 +1,16 @@
+import json
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.core.mail import send_mail
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
 from .models import (
     AboutSection,
+    ContactMessage,
     Event,
     HeroSection,
     HeroVideo,
@@ -13,6 +18,7 @@ from .models import (
     Newsletter,
     SiteSettings,
     Solution,
+    Subscriber,
     TeamMember,
     Testimonial,
 )
@@ -40,6 +46,15 @@ def _base_context():
     }
 
 
+def _get_request_data(request):
+    if request.content_type == "application/json":
+        try:
+            return json.loads(request.body.decode("utf-8"))
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            return None
+    return request.POST
+
+
 def homepage(request):
     return render(request, "index.html", _base_context())
 
@@ -54,22 +69,59 @@ def event_detail(request, slug=None):
     return render(request, "index-details.html", context)
 
 
+@require_POST
 def contact_submit(request):
-    if request.method == "POST":
-        name = request.POST.get("name")
-        email = request.POST.get("email")
-        message = request.POST.get("message")
+    data = _get_request_data(request)
+    if data is None:
+        return JsonResponse({"status": "error", "message": "Invalid JSON payload."}, status=400)
 
-        send_mail(
-            subject=f"New Contact from {name}",
-            message=message,
-            from_email=email,
-            recipient_list=[settings.EMAIL_HOST_USER],
-        )
+    name = (data.get("name") or "").strip()
+    email = (data.get("email") or "").strip()
+    phone = (data.get("phone") or "").strip()
+    message = (data.get("message") or "").strip()
 
-        messages.success(request, "Message sent successfully")
+    if not all([name, email, phone, message]):
+        return JsonResponse({"status": "error", "message": "All fields are required."}, status=400)
 
-    return redirect("homepage")
+    ContactMessage.objects.create(
+        name=name,
+        email=email,
+        phone=phone,
+        message=message,
+    )
+
+    send_mail(
+        subject=f"New Contact from {name}",
+        message=f"""
+Name: {name}
+Email: {email}
+Phone: {phone}
+
+Message:
+{message}
+""".strip(),
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[settings.EMAIL_HOST_USER],
+    )
+
+    return JsonResponse({"status": "success", "message": "Message sent successfully"})
+
+
+@require_POST
+def newsletter_subscribe(request):
+    data = _get_request_data(request)
+    if data is None:
+        return JsonResponse({"status": "error", "message": "Invalid JSON payload."}, status=400)
+
+    email = (data.get("email") or "").strip().lower()
+    if not email:
+        return JsonResponse({"status": "error", "message": "Email is required."}, status=400)
+
+    _, created = Subscriber.objects.get_or_create(email=email)
+    if not created:
+        return JsonResponse({"status": "error", "message": "You are already subscribed"}, status=200)
+
+    return JsonResponse({"status": "success", "message": "Subscribed successfully"})
 
 
 def member_login(request):

@@ -30,6 +30,18 @@ TemplateMo 587 Tiya Golf Club
 https://templatemo.com/tm-587-tiya-golf-club
 
 -->
+    
+        <style>
+            .testimonial-card-link {
+                transition: transform .25s ease, box-shadow .25s ease;
+                cursor: pointer;
+            }
+            .testimonial-card-link:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 1rem 1.5rem rgba(0, 0, 0, .12) !important;
+            }
+        </style>
+
     </head>
     
     <body>
@@ -268,11 +280,13 @@ https://templatemo.com/tm-587-tiya-golf-club
 
                                 <p>{{ newsletter.description|default:"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor ut labore et dolore." }}</p>
 
-                                <form action="#" method="get" class="custom-form mt-lg-4 mt-2" role="form">
+                                <div id="newsletter-alert"></div>
+                                <form id="newsletter-form" action="{% url 'newsletter_subscribe' %}" method="post" class="custom-form mt-lg-4 mt-2" role="form">
+                                    {% csrf_token %}
                                     <div class="input-group input-group-lg">
                                         <span class="input-group-text bi-envelope" id="basic-addon1"></span>
 
-                                        <input type="email" name="email" id="email" pattern="[^ @]*@[^ @]*" class="form-control" placeholder="Email address" required="">
+                                        <input type="email" name="email" id="newsletter-email" pattern="[^ @]*@[^ @]*" class="form-control" placeholder="Email address" required="">
 
                                         <button type="submit" class="form-control">Subscribe</button>
                                     </div>
@@ -296,7 +310,7 @@ https://templatemo.com/tm-587-tiya-golf-club
 
                         {% for testimonial in testimonials %}
                         <div class="col-lg-4 col-md-6 col-12 mb-4">
-                            <div class="card h-100 shadow-sm border-0">
+                            <div class="card h-100 shadow-sm border-0 testimonial-card-link" {% if testimonial.link %}data-href="{{ testimonial.link }}" role="link" tabindex="0"{% endif %}>
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-3">
                                         {% if testimonial.image %}
@@ -324,7 +338,7 @@ https://templatemo.com/tm-587-tiya-golf-club
                         </div>
                         {% empty %}
                         <div class="col-lg-4 col-md-6 col-12 mb-4">
-                            <div class="card h-100 shadow-sm border-0">
+                            <div class="card h-100 shadow-sm border-0 testimonial-card-link" {% if testimonial.link %}data-href="{{ testimonial.link }}" role="link" tabindex="0"{% endif %}>
                                 <div class="card-body">
                                     <h5 class="mb-1">Sarah Johnson</h5>
                                     <small class="text-muted">Club Member</small>
@@ -333,7 +347,7 @@ https://templatemo.com/tm-587-tiya-golf-club
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-6 col-12 mb-4">
-                            <div class="card h-100 shadow-sm border-0">
+                            <div class="card h-100 shadow-sm border-0 testimonial-card-link" {% if testimonial.link %}data-href="{{ testimonial.link }}" role="link" tabindex="0"{% endif %}>
                                 <div class="card-body">
                                     <h5 class="mb-1">David Lee</h5>
                                     <small class="text-muted">Event Participant</small>
@@ -460,7 +474,8 @@ https://templatemo.com/tm-587-tiya-golf-club
                     <div class="row">
 
                         <div class="col-lg-5 col-12">
-                            <form action="{% url 'contact_submit' %}" method="post" class="custom-form contact-form" role="form">
+                            <div id="contact-alert"></div>
+                            <form id="contact-form" action="{% url 'contact_submit' %}" method="post" class="custom-form contact-form" role="form">
                                 {% csrf_token %}
                                 <h2 class="mb-4 pb-2">Contact Tiya</h2>
 
@@ -475,13 +490,21 @@ https://templatemo.com/tm-587-tiya-golf-club
 
                                     <div class="col-lg-6 col-md-6 col-12"> 
                                         <div class="form-floating">
-                                            <input type="email" name="email" id="email" pattern="[^ @]*@[^ @]*" class="form-control" placeholder="Email address" required="">
+                                            <input type="email" name="email" id="contact-email" pattern="[^ @]*@[^ @]*" class="form-control" placeholder="Email address" required="">
                                             
                                             <label for="floatingInput">Email address</label>
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-12 col-12">
+                                    <div class="col-lg-12 col-12 mt-3">
+                                        <div class="form-floating">
+                                            <input type="text" name="phone" id="contact-phone" class="form-control" placeholder="Phone" required="">
+
+                                            <label for="contact-phone">Phone</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12 col-12 mt-3">
                                         <div class="form-floating">
                                             <textarea class="form-control" id="message" name="message" placeholder="Describe message here"></textarea>
                                             
@@ -595,6 +618,69 @@ https://templatemo.com/tm-587-tiya-golf-club
         <script src="{% static 'js/animated-headline.js' %}"></script>
         <script src="{% static 'js/modernizr.js' %}"></script>
         <script src="{% static 'js/custom.js' %}"></script>
+
+        <script>
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+                return '';
+            }
+
+            function showFormAlert(containerId, type, message) {
+                const el = document.getElementById(containerId);
+                el.innerHTML = `<div class="alert alert-${type} mt-2" role="alert">${message}</div>`;
+            }
+
+            async function submitAjaxForm(url, data) {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                return response.json();
+            }
+
+            document.getElementById('contact-form')?.addEventListener('submit', async function (event) {
+                event.preventDefault();
+                const form = event.currentTarget;
+                const payload = {
+                    name: form.querySelector('[name="name"]').value,
+                    email: form.querySelector('[name="email"]').value,
+                    phone: form.querySelector('[name="phone"]').value,
+                    message: form.querySelector('[name="message"]').value
+                };
+
+                const result = await submitAjaxForm(form.action, payload);
+                showFormAlert('contact-alert', result.status === 'success' ? 'success' : 'danger', result.message);
+                if (result.status === 'success') {
+                    form.reset();
+                }
+            });
+
+            document.getElementById('newsletter-form')?.addEventListener('submit', async function (event) {
+                event.preventDefault();
+                const form = event.currentTarget;
+                const payload = { email: form.querySelector('[name="email"]').value };
+                const result = await submitAjaxForm(form.action, payload);
+                showFormAlert('newsletter-alert', result.status === 'success' ? 'success' : 'warning', result.message);
+                if (result.status === 'success') {
+                    form.reset();
+                }
+            });
+
+            document.querySelectorAll('.testimonial-card-link[data-href]').forEach((card) => {
+                card.addEventListener('click', () => window.open(card.dataset.href, '_blank'));
+                card.addEventListener('keypress', (event) => {
+                    if (event.key === 'Enter') {
+                        window.open(card.dataset.href, '_blank');
+                    }
+                });
+            });
+        </script>
 
     </body>
 </html>
